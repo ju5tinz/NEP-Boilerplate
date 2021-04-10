@@ -1,7 +1,7 @@
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcryptjs')
 
-module.exports = function(passport, db) {
+module.exports = (passport, db) => {
   passport.use(
     'local-signup',
     new LocalStrategy((username, password, done) => {
@@ -14,7 +14,7 @@ module.exports = function(passport, db) {
           return done(null, false, {message: "Username is already taken."})
         }
         // no user found, create account
-        bcrypt.hash(password, process.env.BCRYPT_SALT_ROUNDS, function(err, hashedPassword){
+        bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUNDS), (err, hashedPassword) => {
           if(err) {
             return done(err)
           }
@@ -55,7 +55,7 @@ module.exports = function(passport, db) {
             return done(null, false, {message: "Wrong password."})
           }
 
-          return done(null, {uid: user.rows[0].uid, username: res.rows[0].username})
+          return done(null, {uid: user.rows[0].uid, username: user.rows[0].username})
         })
       })
     })
